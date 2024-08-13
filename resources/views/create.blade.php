@@ -1,7 +1,7 @@
 <x-layout>
     <div>
         <h2>
-            Create a new contact
+            Create contact
         </h2>
         <form method="POST" action="{{ route('contacts.store') }}">
             @csrf
