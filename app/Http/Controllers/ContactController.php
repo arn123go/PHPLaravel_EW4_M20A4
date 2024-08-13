@@ -15,6 +15,7 @@ class ContactController extends Controller
         $success = request()->input('success') ?? 0;
         $sortBy = request()->input('sortBy');
         $order = request()->input('order');
+        $searchBy = request()->input('searchBy');
 
         if ( !($sortBy && in_array($sortBy, ['name', 'created_at'])) ) {
             $sortBy = 'name';
@@ -22,8 +23,12 @@ class ContactController extends Controller
         if ( !($order && in_array($order, ['asc', 'desc'])) ) {
             $order = 'asc';
         }
+        if ( !($searchBy && in_array($searchBy, ['name', 'email'])) ) {
+            $searchBy = 'name';
+        }
 
-        if ( in_array(request()->input('searchBy'), ['name', 'email']) && request()->input('searchNeedle') && request()->input('search') == 1){
+
+        if ( request()->input('searchNeedle') && request()->input('search') == 1 ){
             $search = 1;
             $contacts = DB::table('contacts')
             ->where(request()->input('searchBy'), 'like', '%'. request()->input('searchNeedle') .'%')
@@ -31,9 +36,9 @@ class ContactController extends Controller
             ->get();
         }else{
             $search = 0;
-           $contacts = DB::table('contacts')
-           ->orderBy($sortBy, $order)
-           ->get();
+            $contacts = DB::table('contacts')
+            ->orderBy($sortBy, $order)
+            ->get();
         }
 
         return view(
@@ -43,7 +48,7 @@ class ContactController extends Controller
                 'sortBy' => $sortBy,
                 'order' => $order,
                 'search' => $search,
-                'searchBy' => $search == 1 ? request()->input('searchBy') : '',
+                'searchBy' => $searchBy,
                 'searchNeedle' => $search == 1 ? request()->input('searchNeedle') : '',
                 'contacts' => $contacts
             ]
@@ -54,9 +59,9 @@ class ContactController extends Controller
         return view('create');
     }
 
-    public function show($contact){
+    public function show($id){
 
-        $contactInfo = DB::table('contacts')->find($contact);
+        $contactInfo = DB::table('contacts')->find($id);
 
         if ($contactInfo !== null){
             return view('show', ['contact' => $contactInfo]);
@@ -87,8 +92,8 @@ class ContactController extends Controller
         return redirect()->route('contacts.index', ['success' => 1]);
     }
 
-    public function edit($contact){
-        $contactInfo = DB::table('contacts')->find($contact);
+    public function edit($id){
+        $contactInfo = DB::table('contacts')->find($id);
 
         if ($contactInfo !== null){
             return view('edit', ['contact' => $contactInfo]);
@@ -97,20 +102,20 @@ class ContactController extends Controller
         }
     }
 
-    public function update($contact){
-        $contactInfo = DB::table('contacts')->find($contact);
+    public function update($id){
+        $contactInfo = DB::table('contacts')->find($id);
 
         if ($contactInfo !== null){
 
             request()->validate([
                 'name' => ['required', 'min:3'],
                 'phone' => ['required'],
-                'email' => Rule::unique('contacts', 'email')->ignore($contact),
+                'email' => Rule::unique('contacts', 'email')->ignore($id),
                 'address' => ['required']
             ]);
 
             DB::table('contacts')
-            ->where('id', $contact)
+            ->where('id', $id)
             ->update([
                 'name' => request()->input('name'),
                 'email' => request()->input('email'),
@@ -126,11 +131,11 @@ class ContactController extends Controller
         }
     }
 
-    public function destroy($contact){
-        $contactInfo = DB::table('contacts')->find($contact);
+    public function destroy($id){
+        $contactInfo = DB::table('contacts')->find($id);
 
         if ($contactInfo !== null){
-            DB::table('contacts')->where('id', '=', $contact)->delete();
+            DB::table('contacts')->where('id', '=', $id)->delete();
             return redirect()->route('contacts.index', ['success' => 3]);
         }else{
             abort(404);

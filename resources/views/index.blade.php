@@ -52,7 +52,7 @@
             <button type="submit" form="searchForm">Search</button>
         </div>
         <div style="margin-left: 10px">
-            <a href="{{ route('contacts.index', ['sortBy'=>$sortBy, 'order'=>$order, 'search'=>0]) }}">
+            <a href="{{ route('contacts.index', ['sortBy'=>$sortBy, 'order'=>$order, 'search'=>0, 'searchBy'=>$searchBy]) }}">
                 <button >Clear search</button>
             </a>
         </div>
@@ -69,7 +69,7 @@
 
     @if(count($contacts) > 0)
         @foreach ($contacts as $contact)
-            <a href="{{ route('contacts.show', ['contact' => $contact->id]) }}" display="block" style="color:dodgerblue; ">
+            <a href="{{ route('contacts.show', ['id' => $contact->id]) }}" display="block" style="color:dodgerblue; ">
                 <div class="flex-container contact-card-mini" style="margin-bottom:6px">
                     <div  >
                         {{ $contact->name }} ({{ $contact->email }})

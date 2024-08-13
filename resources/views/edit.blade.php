@@ -3,7 +3,7 @@
         <h2>
             Create a new contact
         </h2>
-        <form method="POST" action="{{ route('contacts.update', ['contact'=> $contact->id]) }}">
+        <form method="POST" action="{{ route('contacts.update', ['id'=> $contact->id]) }}">
             @csrf
             @method('PUT')
 
@@ -32,7 +32,7 @@
             </div>
 
             <div>
-                <a href="{{ route('contacts.show', ['contact' => $contact->id]) }}" style="color:grey; display:inline-block">Cancel</a>
+                <a href="{{ route('contacts.show', ['id' => $contact->id]) }}" style="color:grey; display:inline-block">Cancel</a>
                 <button type="submit">Update</button>
             </div>
         </form>

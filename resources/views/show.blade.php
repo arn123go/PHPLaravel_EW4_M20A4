@@ -20,11 +20,11 @@
             <span style="font-weight:bold">Updated at:</span> {{ $contact->updated_at }}<br/>
 
             <div style="margin-top: 15px">
-                <a href="{{ route('contacts.edit', ['contact' => $contact->id]) }}">
+                <a href="{{ route('contacts.edit', ['id' => $contact->id]) }}">
                     <button>Edit</button>
                 </a>
 
-                <form action="{{ route('contacts.destroy', $contact->id) }}" method="POST" style="display:inline; padding:0; background-color:transparent !important;" onsubmit="return confirmDelete()">
+                <form action="{{ route('contacts.destroy', ['id' => $contact->id]) }}" method="POST" style="display:inline; padding:0; background-color:transparent !important;" onsubmit="return confirmDelete()">
                     @csrf
                     @method('DELETE')
                     <button type="submit" id='deleteButton' style="background-color: none">Delete</button>
